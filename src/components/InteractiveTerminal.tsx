@@ -34,6 +34,12 @@ export const InteractiveTerminal: React.FC = () => {
     ramoExecutado: null,
   });
 
+  // History State (Python list demonstration)
+  const [history, setHistory] = useState<string[]>([
+    '15.0 + 25.0 = 40.0',
+    '2.0 ** 8.0 = 256.0',
+  ]);
+
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +52,7 @@ export const InteractiveTerminal: React.FC = () => {
       ...prev,
       { id: Date.now().toString(), type: 'system', text: '----------------------------------------' },
       { id: (Date.now() + 1).toString(), type: 'output', text: '=== CALCULADORA SIMPLES EM PYTHON ===' },
-      { id: (Date.now() + 2).toString(), type: 'output', text: 'Operações: + (Soma), - (Subtração), * (Multiplicação), / (Divisão)' },
+      { id: (Date.now() + 2).toString(), type: 'output', text: 'Operações aceitas: +, -, *, /, ** (potência), // (div. inteira), % (resto)' },
       { id: (Date.now() + 3).toString(), type: 'prompt', text: 'Digite o primeiro número: ' },
     ]);
     setStep('awaiting_num1');
@@ -75,7 +81,7 @@ export const InteractiveTerminal: React.FC = () => {
         setLogs((prev) => [
           ...prev,
           { id: Date.now().toString(), type: 'input', text: val },
-          { id: (Date.now() + 1).toString(), type: 'error', text: 'ValueError: poderia não ser um número válido! Digite um número (ex: 10 ou 4.5): ' },
+          { id: (Date.now() + 1).toString(), type: 'error', text: 'ValueError: digite um número válido (ex: 10 ou 4.5): ' },
         ]);
         setCurrentInput('');
         return;
@@ -84,17 +90,17 @@ export const InteractiveTerminal: React.FC = () => {
       setLogs((prev) => [
         ...prev,
         { id: Date.now().toString(), type: 'input', text: val },
-        { id: (Date.now() + 1).toString(), type: 'prompt', text: 'Digite a operação (+, -, *, /): ' },
+        { id: (Date.now() + 1).toString(), type: 'prompt', text: 'Digite a operação (+, -, *, /, **, //, %): ' },
       ]);
       setVars((v) => ({ ...v, num1: parsed, status: 'num1 atribuído. Aguardando operação...' }));
       setStep('awaiting_op');
       setCurrentInput('');
     } else if (step === 'awaiting_op') {
-      if (!['+', '-', '*', '/'].includes(val)) {
+      if (!['+', '-', '*', '/', '**', '//', '%'].includes(val)) {
         setLogs((prev) => [
           ...prev,
           { id: Date.now().toString(), type: 'input', text: val },
-          { id: (Date.now() + 1).toString(), type: 'error', text: 'Operação inválida! Por favor escolha entre +, -, * ou /: ' },
+          { id: (Date.now() + 1).toString(), type: 'error', text: 'Operação inválida! Escolha entre +, -, *, /, **, //, %: ' },
         ]);
         setCurrentInput('');
         return;
@@ -149,11 +155,41 @@ export const InteractiveTerminal: React.FC = () => {
           logMsg = 'Erro: Não é possível dividir por zero!';
         } else {
           res = n1 / n2;
-          // round decimals cleanly for display if long
           res = Number.isInteger(res) ? res : parseFloat(res.toFixed(4));
           ramo = 'elif operacao == "/": resultado = num1 / num2';
           logMsg = `Resultado: ${n1} / ${n2} = ${res}`;
         }
+      } else if (op === '**') {
+        res = Math.pow(n1, n2);
+        res = Number.isInteger(res) ? res : parseFloat(res.toFixed(4));
+        ramo = 'elif operacao == "**": resultado = num1 ** num2';
+        logMsg = `Resultado: ${n1} ** ${n2} = ${res}`;
+      } else if (op === '//') {
+        if (n2 === 0) {
+          errorOccurred = true;
+          res = 'Divisão inteira por zero!';
+          ramo = 'if num2 == 0: print("Erro: Divisão inteira por zero!")';
+          logMsg = 'Erro: Divisão inteira por zero inválida!';
+        } else {
+          res = Math.floor(n1 / n2);
+          ramo = 'elif operacao == "//": resultado = num1 // num2';
+          logMsg = `Resultado (divisão inteira): ${n1} // ${n2} = ${res}`;
+        }
+      } else if (op === '%') {
+        if (n2 === 0) {
+          errorOccurred = true;
+          res = 'Módulo por zero!';
+          ramo = 'if num2 == 0: print("Erro: Resto da divisão por zero!")';
+          logMsg = 'Erro: Módulo por zero inválido!';
+        } else {
+          res = n1 % n2;
+          ramo = 'elif operacao == "%": resultado = num1 % num2';
+          logMsg = `Resultado (resto da divisão): ${n1} % ${n2} = ${res}`;
+        }
+      }
+
+      if (!errorOccurred) {
+        setHistory((prev) => [...prev, `${n1} ${op} ${n2} = ${res}`]);
       }
 
       setLogs((prev) => [
@@ -167,7 +203,7 @@ export const InteractiveTerminal: React.FC = () => {
         {
           id: (Date.now() + 2).toString(),
           type: 'system',
-          text: '--- Programa finalizado com sucesso ---',
+          text: !errorOccurred ? 'historico.append(...) -> Conta salva na memória!' : '--- Programa finalizado ---',
         },
       ]);
 
@@ -176,7 +212,7 @@ export const InteractiveTerminal: React.FC = () => {
         operacao: op,
         num2: n2,
         resultado: res,
-        status: errorOccurred ? 'Divisão por zero evitada com segurança!' : 'Cálculo finalizado!',
+        status: errorOccurred ? 'Falha evitada com condicional' : 'Cálculo realizado e salvo no histórico!',
         ramoExecutado: ramo,
       });
 
@@ -191,7 +227,7 @@ export const InteractiveTerminal: React.FC = () => {
       { id: Date.now().toString(), type: 'system', text: '----------------------------------------' },
       { id: (Date.now() + 1).toString(), type: 'output', text: '=== CALCULADORA SIMPLES EM PYTHON ===' },
       { id: (Date.now() + 2).toString(), type: 'prompt', text: `Digite o primeiro número: ${n1}` },
-      { id: (Date.now() + 3).toString(), type: 'prompt', text: `Digite a operação (+, -, *, /): ${op}` },
+      { id: (Date.now() + 3).toString(), type: 'prompt', text: `Digite a operação: ${op}` },
       { id: (Date.now() + 4).toString(), type: 'prompt', text: `Digite o segundo número: ${n2}` },
     ]);
 
@@ -224,12 +260,28 @@ export const InteractiveTerminal: React.FC = () => {
         ramo = 'elif operacao == "/": resultado = num1 / num2';
         logMsg = `Resultado: ${n1} / ${n2} = ${res}`;
       }
+    } else if (op === '**') {
+      res = Math.pow(n1, n2);
+      ramo = 'elif operacao == "**": resultado = num1 ** num2';
+      logMsg = `Resultado (Potência): ${n1} ** ${n2} = ${res}`;
+    } else if (op === '//') {
+      res = Math.floor(n1 / n2);
+      ramo = 'elif operacao == "//": resultado = num1 // num2';
+      logMsg = `Resultado (Divisão Inteira): ${n1} // ${n2} = ${res}`;
+    } else if (op === '%') {
+      res = n1 % n2;
+      ramo = 'elif operacao == "%": resultado = num1 % num2';
+      logMsg = `Resultado (Resto da Divisão): ${n1} % ${n2} = ${res}`;
+    }
+
+    if (!isError) {
+      setHistory((prev) => [...prev, `${n1} ${op} ${n2} = ${res}`]);
     }
 
     setLogs((prev) => [
       ...prev,
       { id: (Date.now() + 5).toString(), type: isError ? 'error' : 'output', text: logMsg },
-      { id: (Date.now() + 6).toString(), type: 'system', text: '--- Programa finalizado com sucesso ---' },
+      { id: (Date.now() + 6).toString(), type: 'system', text: !isError ? 'historico.append(...) -> Item registrado na lista!' : '--- Programa finalizado ---' },
     ]);
 
     setVars({
@@ -237,11 +289,33 @@ export const InteractiveTerminal: React.FC = () => {
       operacao: op,
       num2: n2,
       resultado: res,
-      status: isError ? 'Erro prevenido via condicional if num2 == 0' : 'Cálculo realizado com sucesso!',
+      status: isError ? 'Erro prevenido via condicional' : 'Cálculo realizado e salvo na lista!',
       ramoExecutado: ramo,
     });
 
     setStep('completed');
+  };
+
+  const showHistoryInLogs = () => {
+    if (history.length === 0) {
+      setLogs((prev) => [
+        ...prev,
+        { id: Date.now().toString(), type: 'system', text: '>>> historico = [] (Lista de histórico está vazia)' },
+      ]);
+      return;
+    }
+
+    const historyItems = history.map((item, idx) => `  [${idx + 1}] ${item}`);
+    setLogs((prev) => [
+      ...prev,
+      { id: Date.now().toString(), type: 'system', text: `=== LISTA DO HISTÓRICO (len(historico) = ${history.length}) ===` },
+      ...historyItems.map((item, idx) => ({
+        id: `${Date.now()}_${idx}`,
+        type: 'output' as const,
+        text: item,
+      })),
+      { id: `${Date.now()}_end`, type: 'system', text: '--- Fim da lista ---' },
+    ]);
   };
 
   const clearTerminal = () => {
@@ -339,6 +413,33 @@ export const InteractiveTerminal: React.FC = () => {
           className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md text-rose-700 font-medium transition-colors"
         >
           Divisão por Zero (10 ÷ 0)
+        </button>
+        <button
+          onClick={() => runPreset(2, '**', 8)}
+          className="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-md text-purple-700 font-medium transition-colors"
+        >
+          Potência (2 ** 8)
+        </button>
+        <button
+          onClick={() => runPreset(17, '//', 3)}
+          className="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-md text-purple-700 font-medium transition-colors"
+        >
+          Div. Inteira (17 // 3)
+        </button>
+        <button
+          onClick={() => runPreset(17, '%', 3)}
+          className="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-md text-purple-700 font-medium transition-colors"
+        >
+          Resto % (17 % 3)
+        </button>
+        <button
+          onClick={showHistoryInLogs}
+          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md text-blue-700 font-medium transition-colors flex items-center gap-1"
+        >
+          <span>📜 Ver Histórico</span>
+          <span className="w-4 h-4 bg-blue-600 text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+            {history.length}
+          </span>
         </button>
       </div>
 
@@ -465,6 +566,28 @@ export const InteractiveTerminal: React.FC = () => {
                 </div>
                 <div className="font-mono text-base font-extrabold text-blue-950">
                   {vars.resultado !== null ? `${vars.resultado}` : <span className="text-slate-400 font-normal text-sm">--</span>}
+                </div>
+              </div>
+
+              {/* historico (lista) */}
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="font-mono font-semibold text-purple-700">historico</span>
+                  <span className="text-[11px] text-slate-400 font-mono">tipo: list ({history.length} itens)</span>
+                </div>
+                <div className="font-mono text-xs text-slate-700 max-h-24 overflow-y-auto space-y-1 mt-1 bg-white p-2 rounded border border-slate-200">
+                  {history.length === 0 ? (
+                    <span className="text-slate-400 font-sans italic text-[11px]">[] (lista vazia)</span>
+                  ) : (
+                    history.slice(-3).map((item, idx) => (
+                      <div key={idx} className="text-[11px] text-slate-600 truncate">
+                        • {item}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="text-[10px] text-purple-600 mt-1 font-mono">
+                  historico.append(...)
                 </div>
               </div>
             </div>

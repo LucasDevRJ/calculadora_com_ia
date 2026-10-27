@@ -331,4 +331,159 @@ print(mensagem)`,
       },
     ],
   },
+  {
+    id: 'sete_operadores',
+    title: '5. Os 7 Operadores Nativos do Python',
+    badge: 'Poder Matemático',
+    difficulty: 'Iniciante',
+    description: 'Inclui as 4 básicas mais Potência (**), Divisão Inteira (//) e Módulo/Resto da divisão (%).',
+    keyHighlights: [
+      'Potenciação com ** (ex: 2 ** 3 = 8)',
+      'Divisão inteira com // (descarta os decimais)',
+      'Resto da divisão com % (muito útil para par/ímpar)',
+    ],
+    code: `# ========================================================
+# CALCULADORA COMPLETA: OS 7 OPERADORES NATIVOS DO PYTHON
+# ========================================================
+
+print("=== CALCULADORA DE 7 OPERAÇÕES ===")
+print("+  : Soma")
+print("-  : Subtração")
+print("*  : Multiplicação")
+print("/  : Divisão Real (retorna decimal)")
+print("// : Divisão Inteira (retorna só a parte inteira)")
+print("%  : Módulo (resto da divisão)")
+print("** : Potenciação (exponenciação)")
+
+n1 = float(input("\\nDigite o primeiro número: "))
+op = input("Escolha o operador (+, -, *, /, //, %, **): ").strip()
+n2 = float(input("Digite o segundo número: "))
+
+if op == "+":
+    res = n1 + n2
+elif op == "-":
+    res = n1 - n2
+elif op == "*":
+    res = n1 * n2
+elif op == "/":
+    if n2 == 0:
+        res = "Erro: Não é possível dividir por zero!"
+    else:
+        res = n1 / n2
+elif op == "//":
+    if n2 == 0:
+        res = "Erro: Divisão inteira por zero é inválida!"
+    else:
+        res = n1 // n2
+elif op == "%":
+    if n2 == 0:
+        res = "Erro: Módulo por zero é inválido!"
+    else:
+        res = n1 % n2
+elif op == "**":
+    res = n1 ** n2
+else:
+    res = "Operador desconhecido!"
+
+print(f"\\nResultado: {n1} {op} {n2} = {res}")`,
+    annotations: [
+      {
+        lineNumber: 10,
+        code: 'print("// : Divisão Inteira (retorna só a parte inteira)")',
+        conceptTitle: 'Divisão Inteira (//)',
+        explanation: 'A barra dupla // faz uma divisão matemática e joga fora a parte decimal. Por exemplo: 7 // 2 resulta em 3 (e não 3.5).',
+        tags: ['operadores', 'aritmética'],
+      },
+      {
+        lineNumber: 11,
+        code: 'print("%  : Módulo (resto da divisão)")',
+        conceptTitle: 'Módulo ou Resto (%)',
+        explanation: 'O símbolo de porcentagem no Python calcula o que sobra da divisão inteira. Em 7 // 2 sobra 1, logo 7 % 2 é 1. Se n % 2 == 0, o número é par!',
+        tags: ['operadores', 'lógica'],
+      },
+      {
+        lineNumber: 12,
+        code: 'print("** : Potenciação (exponenciação)")',
+        conceptTitle: 'Potenciação (**)',
+        explanation: 'Dois asteriscos realizam a potência: 2 ** 3 significa 2 elevado ao cubo (2 * 2 * 2 = 8). Muito mais rápido do que importar bibliotecas.',
+        tags: ['operadores', 'potência'],
+      },
+    ],
+  },
+  {
+    id: 'historico',
+    title: '6. Com Histórico de Cálculos (Listas)',
+    badge: 'Estruturas de Dados',
+    difficulty: 'Intermediário',
+    description: 'Apresenta o conceito de Listas (list) e o método .append() para salvar todas as contas realizadas.',
+    keyHighlights: [
+      'Criação de lista vazia com historico = []',
+      'Adição dinâmica de elementos com .append()',
+      'Exibição do histórico com laço for item in historico',
+    ],
+    code: `# ========================================================
+# CALCULADORA COM HISTÓRICO DE CÁLCULOS (LISTAS)
+# ========================================================
+
+# 1. Criamos uma lista vazia na memória para guardar as contas
+historico = []
+
+print("=== CALCULADORA COM MEMÓRIA ===")
+
+while True:
+    print("\\nMenu: [1] Fazer Cálculo | [2] Ver Histórico | [0] Sair")
+    opcao = input("Escolha uma opção: ").strip()
+
+    if opcao == "0":
+        print("Encerrando calculadora. Até a próxima!")
+        break
+
+    elif opcao == "2":
+        if len(historico) == 0:
+            print("Histórico vazio! Nenhuma conta realizada ainda.")
+        else:
+            print("=== SEU HISTÓRICO DE CONTAS ===")
+            for i, registro in enumerate(historico, 1):
+                print(f"{i}. {registro}")
+
+    elif opcao == "1":
+        n1 = float(input("Digite o 1º número: "))
+        op = input("Operação (+, -, *, /): ")
+        n2 = float(input("Digite o 2º número: "))
+
+        if op == "+": res = n1 + n2
+        elif op == "-": res = n1 - n2
+        elif op == "*": res = n1 * n2
+        elif op == "/": res = n1 / n2 if n2 != 0 else "Erro: Divisão por 0"
+        else: res = "Inválido"
+
+        linha_resumo = f"{n1} {op} {n2} = {res}"
+        print(f"Resultado: {linha_resumo}")
+
+        # 2. Guardamos a conta dentro da lista usando .append()
+        historico.append(linha_resumo)`,
+    annotations: [
+      {
+        lineNumber: 6,
+        code: 'historico = []',
+        conceptTitle: 'Listas em Python ([])',
+        explanation: 'Os colchetes [] criam uma lista (estrutura de dados). Uma lista é como uma gaveta onde você pode guardar vários dados em ordem.',
+        tags: ['listas', 'estruturas de dados'],
+      },
+      {
+        lineNumber: 22,
+        code: 'for i, registro in enumerate(historico, 1):',
+        conceptTitle: 'Laço for com enumerate',
+        explanation: 'O loop for percorre cada elemento guardado na lista. O enumerate gera automaticamente o número da linha (1, 2, 3...).',
+        tags: ['loops', 'iteração', 'listas'],
+      },
+      {
+        lineNumber: 38,
+        code: 'historico.append(linha_resumo)',
+        conceptTitle: 'O método .append()',
+        explanation: 'O append("...") adiciona um novo item ao final da lista. É assim que programas mantêm históricos, carrinhos de compras e logs!',
+        tags: ['listas', 'métodos'],
+      },
+    ],
+  },
 ];

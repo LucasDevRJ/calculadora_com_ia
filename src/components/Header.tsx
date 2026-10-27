@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ onDownloadCode, activeSection, o
           </span>
         </div>
 
-        {/* Zone 2: 4-5 single-line nav links */}
+        {/* Zone 2: 5 single-line nav links */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600">
           <button
             onClick={() => onNavigate('codigo')}
@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ onDownloadCode, activeSection, o
             }`}
           >
             <Code2 className="w-4 h-4" />
-            Código & Versões
+            Código
           </button>
           <button
             onClick={() => onNavigate('terminal')}
@@ -39,16 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ onDownloadCode, activeSection, o
             }`}
           >
             <Terminal className="w-4 h-4" />
-            Simulador Python
-          </button>
-          <button
-            onClick={() => onNavigate('visual')}
-            className={`whitespace-nowrap shrink-0 transition-colors flex items-center gap-1.5 ${
-              activeSection === 'visual' ? 'text-blue-600 font-semibold' : 'hover:text-slate-900'
-            }`}
-          >
-            <Cpu className="w-4 h-4" />
-            Calculadora Visual
+            Simulador
           </button>
           <button
             onClick={() => onNavigate('conceitos')}
@@ -57,16 +48,25 @@ export const Header: React.FC<HeaderProps> = ({ onDownloadCode, activeSection, o
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            Explicação dos Componentes
+            Conceitos
           </button>
           <button
-            onClick={() => onNavigate('quiz')}
+            onClick={() => onNavigate('debugging')}
             className={`whitespace-nowrap shrink-0 transition-colors flex items-center gap-1.5 ${
-              activeSection === 'quiz' ? 'text-blue-600 font-semibold' : 'hover:text-slate-900'
+              activeSection === 'debugging' ? 'text-blue-600 font-semibold' : 'hover:text-slate-900'
+            }`}
+          >
+            <Cpu className="w-4 h-4" />
+            Erros Comuns
+          </button>
+          <button
+            onClick={() => onNavigate('gerador')}
+            className={`whitespace-nowrap shrink-0 transition-colors flex items-center gap-1.5 ${
+              activeSection === 'gerador' ? 'text-blue-600 font-semibold' : 'hover:text-slate-900'
             }`}
           >
             <HelpCircle className="w-4 h-4" />
-            Quiz de Fixação
+            Gerador Sob Medida
           </button>
         </nav>
 

@@ -81,4 +81,34 @@ conta2 = multiplicar(10, 3)  # 30`,
     commonMistake: 'Esquecer o return dentro da função (a função executará, mas devolverá None).',
     relatedLines: [6, 7, 8],
   },
+  {
+    id: 'sete-operadores',
+    title: 'Os 7 Operadores Matemáticos do Python',
+    pythonSyntax: 'a + b, a - b, a * b, a / b, a ** b, a // b, a % b',
+    summary: 'Além das 4 contas básicas, o Python possui operadores nativos para potência, divisão inteira e resto.',
+    details: 'No Python, a potenciação é feita com ** (ex: 2 ** 3 = 8). A barra dupla // descarta as casas decimais (7 // 2 = 3). O operador de porcentagem % calcula o resto da divisão inteira (7 % 2 = 1), sendo o truque clássico de programação para saber se um número é par (n % 2 == 0) ou ímpar (n % 2 != 0).',
+    example: `print(2 ** 4)   # 16 (2 elevado a 4)
+print(10 // 3)  # 3 (descarta o .333...)
+print(10 % 3)   # 1 (resto da divisão de 10 por 3)`,
+    whyItMatters: 'Permite resolver problemas complexos como cálculos geométricos, juros compostos e algoritmos de paridade sem precisar de bibliotecas externas.',
+    commonMistake: 'Confundir "^" com potência. No Python, o acento circunflexo "^" é um operador binário XOR e NÃO faz potenciação!',
+    relatedLines: [10, 11, 12],
+  },
+  {
+    id: 'historico-listas',
+    title: 'Listas e Histórico de Cálculos (list + append)',
+    pythonSyntax: 'historico = [] \n historico.append("10 + 5 = 15")',
+    summary: 'A primeira estrutura de dados de todo programador: como guardar múltiplos registros em ordem na memória.',
+    details: 'Uma lista em Python é criada usando colchetes []. Ela funciona como uma gaveta que pode guardar infinitos itens. Com o método .append(valor), você insere novos elementos no final da lista. Para ler tudo o que foi guardado, usamos o loop "for conta in historico: print(conta)".',
+    example: `historico = []
+historico.append("5 + 5 = 10")
+historico.append("2 * 8 = 16")
+
+print(f"Total de contas salvas: {len(historico)}")
+for conta in historico:
+    print(f"• {conta}")`,
+    whyItMatters: 'É o primeiro passo para criar sistemas reais que armazenam histórico, listas de usuários, carrinhos de compras e bancos de dados em memória.',
+    commonMistake: 'Recriar a lista dentro do loop (historico = []), o que apagaria todo o histórico anterior a cada nova rodada.',
+    relatedLines: [6, 22, 38],
+  },
 ];

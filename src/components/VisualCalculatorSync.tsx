@@ -53,6 +53,21 @@ export const VisualCalculatorSync: React.FC = () => {
         const val = num1 / secondNum;
         res = Number.isInteger(val) ? val : parseFloat(val.toFixed(4));
       }
+    } else if (operator === '**') {
+      res = Math.pow(num1, secondNum);
+      res = Number.isInteger(res) ? res : parseFloat(res.toFixed(4));
+    } else if (operator === '//') {
+      if (secondNum === 0) {
+        res = 'Erro: Divisão Inteira por 0!';
+      } else {
+        res = Math.floor(num1 / secondNum);
+      }
+    } else if (operator === '%') {
+      if (secondNum === 0) {
+        res = 'Erro: Módulo por 0!';
+      } else {
+        res = num1 % secondNum;
+      }
     }
 
     setResult(res);
@@ -104,20 +119,43 @@ export const VisualCalculatorSync: React.FC = () => {
             {/* Keypad Grid */}
             <div className="grid grid-cols-4 gap-2">
               <button
-                onClick={handleClear}
-                className="col-span-3 py-3 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold rounded-xl text-sm transition-colors active:scale-95"
+                onClick={() => handleOperator('**')}
+                className={`py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
+                  operator === '**' && !isCalculated
+                    ? 'bg-purple-500 text-white font-bold'
+                    : 'bg-slate-800 hover:bg-slate-700 text-purple-300'
+                }`}
+                title="Potenciação (**)"
               >
-                C (Limpar)
+                xʸ (**)
               </button>
               <button
-                onClick={() => handleOperator('/')}
-                className={`py-3 rounded-xl font-bold text-sm transition-colors active:scale-95 ${
-                  operator === '/' && !isCalculated
-                    ? 'bg-amber-500 text-slate-950'
-                    : 'bg-amber-600 hover:bg-amber-500 text-white'
+                onClick={() => handleOperator('//')}
+                className={`py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
+                  operator === '//' && !isCalculated
+                    ? 'bg-purple-500 text-white font-bold'
+                    : 'bg-slate-800 hover:bg-slate-700 text-purple-300'
                 }`}
+                title="Divisão Inteira (//)"
               >
-                ÷
+                // (div)
+              </button>
+              <button
+                onClick={() => handleOperator('%')}
+                className={`py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
+                  operator === '%' && !isCalculated
+                    ? 'bg-purple-500 text-white font-bold'
+                    : 'bg-slate-800 hover:bg-slate-700 text-purple-300'
+                }`}
+                title="Módulo ou Resto (%)"
+              >
+                % (resto)
+              </button>
+              <button
+                onClick={handleClear}
+                className="py-2 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold rounded-xl text-xs transition-colors active:scale-95"
+              >
+                C (Limpar)
               </button>
 
               <button
@@ -299,6 +337,9 @@ export const VisualCalculatorSync: React.FC = () => {
                       {operator === '-' && 'elif operacao == "-":'}
                       {operator === '*' && 'elif operacao == "*":'}
                       {operator === '/' && 'elif operacao == "/":'}
+                      {operator === '**' && 'elif operacao == "**":'}
+                      {operator === '//' && 'elif operacao == "//":'}
+                      {operator === '%' && 'elif operacao == "%":'}
                     </span>
                     <div className="pl-4 text-emerald-300">
                       {operator === '/' && num2 === 0 ? (

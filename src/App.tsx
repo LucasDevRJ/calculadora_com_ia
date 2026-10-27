@@ -4,11 +4,14 @@ import { CodeViewer } from './components/CodeViewer';
 import { InteractiveTerminal } from './components/InteractiveTerminal';
 import { VisualCalculatorSync } from './components/VisualCalculatorSync';
 import { ConceptExplainer } from './components/ConceptExplainer';
+import { DebuggingLab } from './components/DebuggingLab';
+import { CustomCodeGenerator } from './components/CustomCodeGenerator';
+import { PythonCheatSheet } from './components/PythonCheatSheet';
 import { QuizSection } from './components/QuizSection';
 import { HowToRunGuide } from './components/HowToRunGuide';
 import { PYTHON_VERSIONS } from './data/calculatorCodes';
 import { PythonCodeVersion } from './types';
-import { Terminal, Code2, Download, ArrowDown, Sparkles } from 'lucide-react';
+import { Terminal, Code2, Download, ArrowDown, Sparkles, Bug, Sliders, BookMarked } from 'lucide-react';
 
 export default function App() {
   const [selectedVersion, setSelectedVersion] = useState<PythonCodeVersion>(
@@ -101,6 +104,38 @@ export default function App() {
               <span>Baixar Arquivo .py</span>
             </button>
           </div>
+
+          {/* Quick jump pills */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <span className="text-slate-400 font-medium">Navegação Rápida:</span>
+            <button
+              onClick={() => handleNavigate('debugging')}
+              className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-md transition-colors flex items-center gap-1"
+            >
+              <Bug className="w-3.5 h-3.5 text-rose-500" />
+              <span>Erros Comuns & Fix</span>
+            </button>
+            <button
+              onClick={() => handleNavigate('gerador')}
+              className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-md transition-colors flex items-center gap-1"
+            >
+              <Sliders className="w-3.5 h-3.5 text-purple-600" />
+              <span>Gerador de Código</span>
+            </button>
+            <button
+              onClick={() => handleNavigate('cheatsheet')}
+              className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-md transition-colors flex items-center gap-1"
+            >
+              <BookMarked className="w-3.5 h-3.5 text-blue-600" />
+              <span>Cheat Sheet</span>
+            </button>
+            <button
+              onClick={() => handleNavigate('visual')}
+              className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-md transition-colors"
+            >
+              Calculadora Gráfica
+            </button>
+          </div>
         </section>
 
         {/* 3. Section 1: The Code & Annotations */}
@@ -120,10 +155,19 @@ export default function App() {
         {/* 6. Section 4: Deep Dive into Code Components */}
         <ConceptExplainer />
 
-        {/* 7. Section 5: Quiz for Knowledge Reinforcement */}
+        {/* 7. Section 5: Laboratório de Debugging (Erros Comuns) */}
+        <DebuggingLab />
+
+        {/* 8. Section 6: Gerador Personalizado de Código */}
+        <CustomCodeGenerator />
+
+        {/* 9. Section 7: Cheat Sheet de Operadores e Sintaxe */}
+        <PythonCheatSheet />
+
+        {/* 10. Section 8: Quiz for Knowledge Reinforcement */}
         <QuizSection />
 
-        {/* 8. Section 6: How to Run on PC Guide */}
+        {/* 11. Section 9: How to Run on PC Guide */}
         <HowToRunGuide />
       </main>
 

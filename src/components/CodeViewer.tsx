@@ -72,6 +72,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                 {ver.id === 'funcoes' && '2. Com Funções'}
                 {ver.id === 'loop' && '3. Com Loop'}
                 {ver.id === 'try_except' && '4. Tratamento de Erros'}
+                {ver.id === 'sete_operadores' && '5. 7 Operadores'}
+                {ver.id === 'historico' && '6. Histórico (Listas)'}
               </button>
             );
           })}
