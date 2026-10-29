@@ -66,6 +66,28 @@ else:
     relatedLines: [28, 29, 30, 31],
   },
   {
+    id: 'porcentagem-vs-modulo',
+    title: 'Porcentagem Real vs. Operador % (Módulo)',
+    pythonSyntax: 'porcentagem = (taxa / 100) * valor_total',
+    summary: 'Entenda por que o símbolo % no Python calcula resto de divisão e como programar cálculos reais de porcentagem, descontos e juros.',
+    details: 'Na calculadora comum, a tecla % calcula porcentagem. Porém, no Python (e na maioria das linguagens de programação), o símbolo % é o operador de Módulo (resto da divisão inteira: 17 % 3 = 2). Para calcular quanto é X% de um valor Y em Python, aplicamos a regra matemática "por cento" (dividir por 100): (taxa / 100) * valor.',
+    example: `valor_produto = 200.0
+taxa_percentual = 15.0  # 15%
+
+# 1. Quanto é 15% de 200?
+parte = (taxa_percentual / 100) * valor_produto  # 30.0
+
+# 2. Preço com 15% de desconto e com 15% de acréscimo
+com_desconto = valor_produto - parte             # 170.0
+com_acrescimo = valor_produto + parte            # 230.0
+
+print(f"15% de R$ {valor_produto} = R$ {parte:.2f}")
+print(f"Com desconto: R$ {com_desconto:.2f} | Com juros: R$ {com_acrescimo:.2f}")`,
+    whyItMatters: 'Cálculos de porcentagem estão presentes em quase todo software do mundo real: e-commerce (descontos), finanças (impostos e juros) e estatísticas.',
+    commonMistake: 'Escrever 15 % 200 achando que vai calcular 15% de 200. Em Python, 15 % 200 retorna 15 (o resto da divisão de 15 por 200)!',
+    relatedLines: [12, 16, 20],
+  },
+  {
     id: 'funcoes-def',
     title: 'Modularização com Funções (def)',
     pythonSyntax: 'def somar(a, b): return a + b',

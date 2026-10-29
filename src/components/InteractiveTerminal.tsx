@@ -37,7 +37,7 @@ export const InteractiveTerminal: React.FC = () => {
   // History State (Python list demonstration)
   const [history, setHistory] = useState<string[]>([
     '15.0 + 25.0 = 40.0',
-    '2.0 ** 8.0 = 256.0',
+    '15.0% de 200.0 = 30.0',
   ]);
 
   const terminalEndRef = useRef<HTMLDivElement>(null);
@@ -52,8 +52,8 @@ export const InteractiveTerminal: React.FC = () => {
       ...prev,
       { id: Date.now().toString(), type: 'system', text: '----------------------------------------' },
       { id: (Date.now() + 1).toString(), type: 'output', text: '=== CALCULADORA SIMPLES EM PYTHON ===' },
-      { id: (Date.now() + 2).toString(), type: 'output', text: 'Operações aceitas: +, -, *, /, ** (potência), // (div. inteira), % (resto)' },
-      { id: (Date.now() + 3).toString(), type: 'prompt', text: 'Digite o primeiro número: ' },
+      { id: (Date.now() + 2).toString(), type: 'output', text: 'Operações aceitas: +, -, *, /, ** (potência), // (div. inteira), % (resto), porc (porcentagem)' },
+      { id: (Date.now() + 3).toString(), type: 'prompt', text: 'Digite o primeiro número (ou a taxa %): ' },
     ]);
     setStep('awaiting_num1');
     setVars({
@@ -90,17 +90,18 @@ export const InteractiveTerminal: React.FC = () => {
       setLogs((prev) => [
         ...prev,
         { id: Date.now().toString(), type: 'input', text: val },
-        { id: (Date.now() + 1).toString(), type: 'prompt', text: 'Digite a operação (+, -, *, /, **, //, %): ' },
+        { id: (Date.now() + 1).toString(), type: 'prompt', text: 'Digite a operação (+, -, *, /, **, //, %, porc): ' },
       ]);
       setVars((v) => ({ ...v, num1: parsed, status: 'num1 atribuído. Aguardando operação...' }));
       setStep('awaiting_op');
       setCurrentInput('');
     } else if (step === 'awaiting_op') {
-      if (!['+', '-', '*', '/', '**', '//', '%'].includes(val)) {
+      const normalizedOp = val.toLowerCase();
+      if (!['+', '-', '*', '/', '**', '//', '%', 'porc'].includes(normalizedOp)) {
         setLogs((prev) => [
           ...prev,
           { id: Date.now().toString(), type: 'input', text: val },
-          { id: (Date.now() + 1).toString(), type: 'error', text: 'Operação inválida! Escolha entre +, -, *, /, **, //, %: ' },
+          { id: (Date.now() + 1).toString(), type: 'error', text: 'Operação inválida! Escolha entre +, -, *, /, **, //, %, porc: ' },
         ]);
         setCurrentInput('');
         return;
@@ -108,10 +109,10 @@ export const InteractiveTerminal: React.FC = () => {
 
       setLogs((prev) => [
         ...prev,
-        { id: Date.now().toString(), type: 'input', text: val },
-        { id: (Date.now() + 1).toString(), type: 'prompt', text: 'Digite o segundo número: ' },
+        { id: Date.now().toString(), type: 'input', text: normalizedOp },
+        { id: (Date.now() + 1).toString(), type: 'prompt', text: normalizedOp === 'porc' ? 'Digite o valor total sobre o qual calcular a porcentagem: ' : 'Digite o segundo número: ' },
       ]);
-      setVars((v) => ({ ...v, operacao: val, status: 'operacao atribuída. Aguardando num2...' }));
+      setVars((v) => ({ ...v, operacao: normalizedOp, status: 'operacao atribuída. Aguardando num2...' }));
       setStep('awaiting_num2');
       setCurrentInput('');
     } else if (step === 'awaiting_num2') {
@@ -186,10 +187,16 @@ export const InteractiveTerminal: React.FC = () => {
           ramo = 'elif operacao == "%": resultado = num1 % num2';
           logMsg = `Resultado (resto da divisão): ${n1} % ${n2} = ${res}`;
         }
+      } else if (op === 'porc') {
+        const valPorc = (n1 / 100) * n2;
+        res = Number.isInteger(valPorc) ? valPorc : parseFloat(valPorc.toFixed(4));
+        ramo = 'elif operacao == "porc": resultado = (num1 / 100) * num2';
+        logMsg = `Resultado (Porcentagem): ${n1}% de ${n2} = ${res} (Com desconto: ${n2 - Number(res)} | Com acréscimo: ${n2 + Number(res)})`;
       }
 
       if (!errorOccurred) {
-        setHistory((prev) => [...prev, `${n1} ${op} ${n2} = ${res}`]);
+        const entry = op === 'porc' ? `${n1}% de ${n2} = ${res}` : `${n1} ${op} ${n2} = ${res}`;
+        setHistory((prev) => [...prev, entry]);
       }
 
       setLogs((prev) => [
@@ -272,10 +279,16 @@ export const InteractiveTerminal: React.FC = () => {
       res = n1 % n2;
       ramo = 'elif operacao == "%": resultado = num1 % num2';
       logMsg = `Resultado (Resto da Divisão): ${n1} % ${n2} = ${res}`;
+    } else if (op === 'porc') {
+      const valPorc = (n1 / 100) * n2;
+      res = Number.isInteger(valPorc) ? valPorc : parseFloat(valPorc.toFixed(4));
+      ramo = 'elif operacao == "porc": resultado = (num1 / 100) * num2';
+      logMsg = `Resultado (Porcentagem): ${n1}% de ${n2} = ${res} (Com desconto: ${n2 - Number(res)} | Com acréscimo: ${n2 + Number(res)})`;
     }
 
     if (!isError) {
-      setHistory((prev) => [...prev, `${n1} ${op} ${n2} = ${res}`]);
+      const entry = op === 'porc' ? `${n1}% de ${n2} = ${res}` : `${n1} ${op} ${n2} = ${res}`;
+      setHistory((prev) => [...prev, entry]);
     }
 
     setLogs((prev) => [
@@ -409,6 +422,12 @@ export const InteractiveTerminal: React.FC = () => {
           Divisão (84 ÷ 4)
         </button>
         <button
+          onClick={() => runPreset(15, 'porc', 200)}
+          className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-md text-emerald-700 font-medium transition-colors"
+        >
+          Porcentagem (15% de 200)
+        </button>
+        <button
           onClick={() => runPreset(10, '/', 0)}
           className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md text-rose-700 font-medium transition-colors"
         >
@@ -490,8 +509,8 @@ export const InteractiveTerminal: React.FC = () => {
                     step === 'awaiting_num1'
                       ? 'Digite um número (ex: 15) e aperte Enter...'
                       : step === 'awaiting_op'
-                      ? 'Digite +, -, * ou / e aperte Enter...'
-                      : 'Digite o segundo número (ex: 3) e aperte Enter...'
+                      ? 'Digite +, -, *, /, **, //, % ou porc e aperte Enter...'
+                      : 'Digite o segundo número (ex: 200) e aperte Enter...'
                   }
                   className="flex-1 bg-slate-900 text-white font-mono text-xs sm:text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />

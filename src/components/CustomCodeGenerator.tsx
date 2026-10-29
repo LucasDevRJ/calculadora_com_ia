@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Sliders, Copy, Check, Download, Sparkles, Code2 } from 'lucide-react';
+import { Sliders, Copy, Check, Download, Sparkles } from 'lucide-react';
 
 export const CustomCodeGenerator: React.FC = () => {
+  const [includePercentage, setIncludePercentage] = useState<boolean>(true);
   const [includeAdvancedOps, setIncludeAdvancedOps] = useState<boolean>(true);
   const [useFunctions, setUseFunctions] = useState<boolean>(false);
   const [useLoop, setUseLoop] = useState<boolean>(true);
@@ -31,6 +32,11 @@ export const CustomCodeGenerator: React.FC = () => {
       code += `    if b == 0:\n`;
       code += `        return "Erro: Divisão por zero!"\n`;
       code += `    return a / b\n`;
+      if (includePercentage) {
+        code += `def porcentagem(taxa, valor):\n`;
+        code += `    """Calcula quanto é taxa% de valor: (taxa / 100) * valor"""\n`;
+        code += `    return (taxa / 100) * valor\n`;
+      }
       if (includeAdvancedOps) {
         code += `def potencia(a, b): return a ** b\n`;
         code += `def resto(a, b): return a % b\n`;
@@ -46,21 +52,24 @@ export const CustomCodeGenerator: React.FC = () => {
       code += `    print("\\n" + "-" * 35)\n`;
       code += `    print("Operações disponíveis:")\n`;
       code += `    print("+ : Soma | - : Subtração | * : Multiplicação | / : Divisão")\n`;
+      if (includePercentage) {
+        code += `    print("porc : Porcentagem (calcula X% de Y)")\n`;
+      }
       if (includeAdvancedOps) {
-        code += `    print("** : Potência | % : Resto da divisão")\n`;
+        code += `    print("** : Potência | % : Resto da divisão (Módulo)")\n`;
       }
       if (useHistory) {
         code += `    print("h : Ver histórico de cálculos")\n`;
       }
       code += `    print("0 : Sair do programa")\n`;
       code += `    print("-" * 35)\n\n`;
-      code += `    op = input("Escolha a operação desejada: ").strip()\n\n`;
+      code += `    op = input("Escolha a operação desejada: ").strip().lower()\n\n`;
       code += `    if op == "0":\n`;
       code += `        print("Obrigado por usar a calculadora! Encerrando...")\n`;
       code += `        break\n\n`;
 
       if (useHistory) {
-        code += `    if op.lower() == "h":\n`;
+        code += `    if op == "h":\n`;
         code += `        if not historico:\n`;
         code += `            print("Histórico vazio! Nenhuma conta feita ainda.")\n`;
         code += `        else:\n`;
@@ -70,20 +79,21 @@ export const CustomCodeGenerator: React.FC = () => {
         code += `        continue\n\n`;
       }
     } else {
+      const extraOps = [
+        includePercentage ? 'porc' : '',
+        includeAdvancedOps ? '**, %' : '',
+      ].filter(Boolean).join(', ');
       code += `print("=== CALCULADORA SIMPLES EM PYTHON ===")\n`;
-      code += `op = input("Escolha a operação (+, -, *, /${includeAdvancedOps ? ', **, %' : ''}): ").strip()\n\n`;
+      code += `op = input("Escolha a operação (+, -, *, /${extraOps ? `, ${extraOps}` : ''}): ").strip().lower()\n\n`;
     }
 
     if (useTryExcept) {
       code += `${indent}try:\n`;
-      code += `${indent}    n1 = float(input("Digite o 1º número: "))\n`;
-      if (!useLoop) {
-        // already asked op before, else ask n2
-      }
-      code += `${indent}    n2 = float(input("Digite o 2º número: "))\n`;
+      code += `${indent}    n1 = float(input("Digite o 1º número (ou taxa %): "))\n`;
+      code += `${indent}    n2 = float(input("Digite o 2º número (ou valor base): "))\n`;
     } else {
-      code += `${indent}n1 = float(input("Digite o 1º número: "))\n`;
-      code += `${indent}n2 = float(input("Digite o 2º número: "))\n`;
+      code += `${indent}n1 = float(input("Digite o 1º número (ou taxa %): "))\n`;
+      code += `${indent}n2 = float(input("Digite o 2º número (ou valor base): "))\n`;
     }
 
     const innerIndent = useTryExcept ? indent + '    ' : indent;
@@ -94,6 +104,9 @@ export const CustomCodeGenerator: React.FC = () => {
       code += `${innerIndent}elif op == "-":\n${innerIndent}    resultado = subtrair(n1, n2)\n`;
       code += `${innerIndent}elif op == "*":\n${innerIndent}    resultado = multiplicar(n1, n2)\n`;
       code += `${innerIndent}elif op == "/":\n${innerIndent}    resultado = dividir(n1, n2)\n`;
+      if (includePercentage) {
+        code += `${innerIndent}elif op == "porc":\n${innerIndent}    resultado = porcentagem(n1, n2)\n`;
+      }
       if (includeAdvancedOps) {
         code += `${innerIndent}elif op == "**":\n${innerIndent}    resultado = potencia(n1, n2)\n`;
         code += `${innerIndent}elif op == "%":\n${innerIndent}    resultado = resto(n1, n2)\n`;
@@ -106,6 +119,9 @@ export const CustomCodeGenerator: React.FC = () => {
       code += `${innerIndent}elif op == "/":\n`;
       code += `${innerIndent}    if n2 == 0:\n${innerIndent}        resultado = "Erro: Divisão por zero!"\n`;
       code += `${innerIndent}    else:\n${innerIndent}        resultado = n1 / n2\n`;
+      if (includePercentage) {
+        code += `${innerIndent}elif op == "porc":\n${innerIndent}    # Calcula n1% de n2: (n1 / 100) * n2\n${innerIndent}    resultado = (n1 / 100) * n2\n`;
+      }
       if (includeAdvancedOps) {
         code += `${innerIndent}elif op == "**":\n${innerIndent}    resultado = n1 ** n2\n`;
         code += `${innerIndent}elif op == "%":\n${innerIndent}    resultado = n1 % n2\n`;
@@ -116,7 +132,14 @@ export const CustomCodeGenerator: React.FC = () => {
     const displayFormat = formatDecimals ? ':.2f' : '';
     code += `\n${innerIndent}# Exibe o resultado formatado\n`;
     code += `${innerIndent}if isinstance(resultado, (int, float)):\n`;
-    code += `${innerIndent}    mensagem = f"{n1} {op} {n2} = {resultado${displayFormat}}"\n`;
+    if (includePercentage) {
+      code += `${innerIndent}    if op == "porc":\n`;
+      code += `${innerIndent}        mensagem = f"{n1}% de {n2} = {resultado${displayFormat}}"\n`;
+      code += `${innerIndent}    else:\n`;
+      code += `${innerIndent}        mensagem = f"{n1} {op} {n2} = {resultado${displayFormat}}"\n`;
+    } else {
+      code += `${innerIndent}    mensagem = f"{n1} {op} {n2} = {resultado${displayFormat}}"\n`;
+    }
     code += `${innerIndent}    print(f"Resultado: {mensagem}")\n`;
     if (useHistory) {
       code += `${innerIndent}    historico.append(mensagem)  # Salva na lista\n`;
@@ -199,6 +222,24 @@ export const CustomCodeGenerator: React.FC = () => {
             </h3>
 
             <div className="space-y-3">
+              {/* Option 0: Percentage */}
+              <label className="flex items-start gap-3 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 cursor-pointer transition-colors shadow-2xs">
+                <input
+                  type="checkbox"
+                  checked={includePercentage}
+                  onChange={(e) => setIncludePercentage(e.target.checked)}
+                  className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500"
+                />
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block">
+                    Incluir Cálculo de Porcentagem (X% de Y)
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-tight block mt-0.5">
+                    Adiciona a operação <code className="font-mono text-emerald-600">porc</code> usando a fórmula <code className="font-mono text-slate-700">(n1 / 100) * n2</code>.
+                  </span>
+                </div>
+              </label>
+
               {/* Option 1: Advanced ops */}
               <label className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-200 hover:border-slate-300 cursor-pointer transition-colors shadow-2xs">
                 <input
@@ -212,7 +253,7 @@ export const CustomCodeGenerator: React.FC = () => {
                     Adicionar Potência (**) e Resto (%)
                   </span>
                   <span className="text-[11px] text-slate-500 leading-tight block mt-0.5">
-                    Permite calcular potências como 2³ e encontrar restos de divisão.
+                    Permite calcular potências como 2³ e encontrar restos de divisão inteira.
                   </span>
                 </div>
               </label>

@@ -411,8 +411,85 @@ print(f"\\nResultado: {n1} {op} {n2} = {res}")`,
     ],
   },
   {
+    id: 'porcentagem',
+    title: '6. Cálculo de Porcentagem (Descontos & Acréscimos)',
+    badge: 'Matemática Financeira',
+    difficulty: 'Iniciante',
+    description: 'Ensina a calcular porcentagens reais ((taxa / 100) * valor), descontos e acréscimos sem confundir com o operador % de resto.',
+    keyHighlights: [
+      'Cálculo de X% de um valor: (taxa / 100) * valor',
+      'Cálculo de Desconto e Acréscimo percentual',
+      'Diferença prática entre % (módulo) e porcentagem real',
+    ],
+    code: `# ========================================================
+# CALCULADORA DE PORCENTAGEM, DESCONTOS E ACRÉSCIMOS
+# ========================================================
+# Atenção: No Python, o símbolo % calcula o RESTO da divisão!
+# Para calcular PORCENTAGEM real, dividimos por 100: (taxa / 100) * valor
+
+print("=== CALCULADORA DE PORCENTAGEM EM PYTHON ===")
+print("[1] Calcular X% de um valor (ex: 15% de 200)")
+print("[2] Aplicar Desconto percentual (ex: produto com 10% OFF)")
+print("[3] Aplicar Acréscimo / Juros (ex: conta com +5% de taxa)")
+print("[4] Descobrir quantos % um valor representa do total")
+
+opcao = input("\\nEscolha o tipo de cálculo (1 a 4): ").strip()
+
+if opcao in ["1", "2", "3"]:
+    taxa = float(input("Digite a porcentagem (ex: 15 para 15%): "))
+    valor = float(input("Digite o valor base (ex: 200): "))
+    
+    # Fórmula central: (taxa / 100) multiplicado pelo valor base
+    valor_porcentagem = (taxa / 100) * valor
+    
+    if opcao == "1":
+        print(f"\\nResultado: {taxa}% de {valor} é igual a {valor_porcentagem:.2f}")
+    elif opcao == "2":
+        preco_final = valor - valor_porcentagem
+        print(f"\\nDesconto de {taxa}% (-R$ {valor_porcentagem:.2f})")
+        print(f"Valor final com desconto: R$ {preco_final:.2f}")
+    elif opcao == "3":
+        preco_final = valor + valor_porcentagem
+        print(f"\\nAcréscimo de {taxa}% (+R$ {valor_porcentagem:.2f})")
+        print(f"Valor final com acréscimo: R$ {preco_final:.2f}")
+
+elif opcao == "4":
+    parte = float(input("Digite a parte (ex: 30): "))
+    total = float(input("Digite o valor total (ex: 200): "))
+    if total == 0:
+        print("Erro: O valor total não pode ser zero!")
+    else:
+        percentual = (parte / total) * 100
+        print(f"\\nResultado: {parte} corresponde a {percentual:.2f}% de {total}")
+else:
+    print("Opção inválida! Escolha de 1 a 4.")`,
+    annotations: [
+      {
+        lineNumber: 20,
+        code: 'valor_porcentagem = (taxa / 100) * valor',
+        conceptTitle: 'A Fórmula da Porcentagem em Python',
+        explanation: 'Como "por cento" significa literalmente "dividido por 100", em Python calculamos X% de um valor dividindo a taxa por 100 e multiplicando pelo valor total.',
+        tags: ['porcentagem', 'fórmula', 'matemática'],
+      },
+      {
+        lineNumber: 25,
+        code: 'preco_final = valor - valor_porcentagem',
+        conceptTitle: 'Cálculo de Desconto',
+        explanation: 'Depois de descobrir quanto vale a porcentagem em reais (valor_porcentagem), basta subtrair esse valor do preço original para obter o preço com desconto.',
+        tags: ['desconto', 'finanças'],
+      },
+      {
+        lineNumber: 39,
+        code: 'percentual = (parte / total) * 100',
+        conceptTitle: 'Proporção Percentual',
+        explanation: 'Para descobrir quantos por cento um número representa de outro (ex: 30 de 200), dividimos a parte pelo total (30 / 200 = 0.15) e multiplicamos por 100 (15%).',
+        tags: ['proporção', 'estatística'],
+      },
+    ],
+  },
+  {
     id: 'historico',
-    title: '6. Com Histórico de Cálculos (Listas)',
+    title: '7. Com Histórico de Cálculos (Listas)',
     badge: 'Estruturas de Dados',
     difficulty: 'Intermediário',
     description: 'Apresenta o conceito de Listas (list) e o método .append() para salvar todas as contas realizadas.',
@@ -448,16 +525,17 @@ while True:
 
     elif opcao == "1":
         n1 = float(input("Digite o 1º número: "))
-        op = input("Operação (+, -, *, /): ")
+        op = input("Operação (+, -, *, /, porc): ")
         n2 = float(input("Digite o 2º número: "))
 
         if op == "+": res = n1 + n2
         elif op == "-": res = n1 - n2
         elif op == "*": res = n1 * n2
         elif op == "/": res = n1 / n2 if n2 != 0 else "Erro: Divisão por 0"
+        elif op == "porc": res = (n1 / 100) * n2
         else: res = "Inválido"
 
-        linha_resumo = f"{n1} {op} {n2} = {res}"
+        linha_resumo = f"{n1}% de {n2} = {res}" if op == "porc" else f"{n1} {op} {n2} = {res}"
         print(f"Resultado: {linha_resumo}")
 
         # 2. Guardamos a conta dentro da lista usando .append()
@@ -478,7 +556,7 @@ while True:
         tags: ['loops', 'iteração', 'listas'],
       },
       {
-        lineNumber: 38,
+        lineNumber: 39,
         code: 'historico.append(linha_resumo)',
         conceptTitle: 'O método .append()',
         explanation: 'O append("...") adiciona um novo item ao final da lista. É assim que programas mantêm históricos, carrinhos de compras e logs!',

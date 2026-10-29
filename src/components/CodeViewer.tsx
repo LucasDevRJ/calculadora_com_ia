@@ -73,7 +73,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                 {ver.id === 'loop' && '3. Com Loop'}
                 {ver.id === 'try_except' && '4. Tratamento de Erros'}
                 {ver.id === 'sete_operadores' && '5. 7 Operadores'}
-                {ver.id === 'historico' && '6. Histórico (Listas)'}
+                {ver.id === 'porcentagem' && '6. Porcentagem (%)'}
+                {ver.id === 'historico' && '7. Histórico (Listas)'}
               </button>
             );
           })}

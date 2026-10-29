@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import { BookMarked, Calculator, Layers, Binary, Copy, Check } from 'lucide-react';
 
 export const PythonCheatSheet: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'operadores' | 'tipos' | 'comparadores' | 'funcoes'>('operadores');
-  const [copiedText, setCopiedText] = useState<string | null>(null);
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedText(text);
-    setTimeout(() => setCopiedText(null), 1500);
-  };
 
   return (
     <section id="cheatsheet" className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
@@ -26,7 +18,7 @@ export const PythonCheatSheet: React.FC = () => {
             Guia Rápido de Bolso: Sintaxe e Operadores
           </h2>
           <p className="text-xs text-slate-600 mt-0.5">
-            Consulte a qualquer momento durante seus estudos. Clique em qualquer linha para copiar o exemplo.
+            Consulte a qualquer momento durante seus estudos.
           </p>
         </div>
 
@@ -38,7 +30,7 @@ export const PythonCheatSheet: React.FC = () => {
               activeTab === 'operadores' ? 'bg-white text-slate-900 shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Operadores Aritméticos (7)
+            Operadores & Porcentagem
           </button>
           <button
             onClick={() => setActiveTab('tipos')}
@@ -71,13 +63,13 @@ export const PythonCheatSheet: React.FC = () => {
         {activeTab === 'operadores' && (
           <div className="space-y-4">
             <p className="text-xs text-slate-600">
-              Além das 4 operações elementares (+, -, *, /), o Python possui operadores nativos incríveis para cálculos avançados:
+              Além das 4 operações elementares (+, -, *, /), veja os operadores nativos do Python e a fórmula de porcentagem:
             </p>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-500 font-semibold bg-slate-50/50">
-                    <th className="py-2.5 px-3">Operador</th>
+                    <th className="py-2.5 px-3">Operador / Fórmula</th>
                     <th className="py-2.5 px-3">Nome da Operação</th>
                     <th className="py-2.5 px-3">Exemplo em Python</th>
                     <th className="py-2.5 px-3">Resultado</th>
@@ -125,7 +117,7 @@ export const PythonCheatSheet: React.FC = () => {
                     <td className="py-2.5 px-3 font-sans font-medium text-slate-800">Módulo (Resto da Divisão)</td>
                     <td className="py-2.5 px-3 text-slate-700">7 % 2</td>
                     <td className="py-2.5 px-3 text-emerald-600 font-bold">1</td>
-                    <td className="py-2.5 px-3 font-sans text-slate-500 text-[11px]">Resto da divisão (usado para saber se é par/ímpar)</td>
+                    <td className="py-2.5 px-3 font-sans text-slate-500 text-[11px]">Resto da divisão (NÃO é porcentagem!)</td>
                   </tr>
                   <tr className="hover:bg-slate-50 bg-blue-50/20">
                     <td className="py-2.5 px-3 font-bold text-purple-600">**</td>
@@ -133,6 +125,13 @@ export const PythonCheatSheet: React.FC = () => {
                     <td className="py-2.5 px-3 text-slate-700">2 ** 3</td>
                     <td className="py-2.5 px-3 text-emerald-600 font-bold">8</td>
                     <td className="py-2.5 px-3 font-sans text-slate-500 text-[11px]">Eleva o 1º número à potência do 2º (2³ = 8)</td>
+                  </tr>
+                  <tr className="hover:bg-emerald-50/60 bg-emerald-50/40">
+                    <td className="py-2.5 px-3 font-bold text-emerald-700">(x / 100) * y</td>
+                    <td className="py-2.5 px-3 font-sans font-semibold text-emerald-900">Porcentagem Real (x% de y)</td>
+                    <td className="py-2.5 px-3 text-slate-800">(15 / 100) * 200</td>
+                    <td className="py-2.5 px-3 text-emerald-700 font-bold">30.0</td>
+                    <td className="py-2.5 px-3 font-sans text-emerald-800 text-[11px]">Calcula quanto é 15% de 200</td>
                   </tr>
                 </tbody>
               </table>

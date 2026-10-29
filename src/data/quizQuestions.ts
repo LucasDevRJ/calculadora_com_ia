@@ -48,5 +48,17 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correctIndex: 1,
     explanation: 'Muito bem! Trata-se de uma f-string (format string), um dos recursos mais práticos do Python moderno para mesclar textos e variáveis dinamicamente.'
+  },
+  {
+    id: 5,
+    question: 'Em Python, como calculamos quanto é 15% de 200? E o que faz o operador "%" sozinho (ex: 15 % 2)?',
+    options: [
+      'Usamos (15 * 200) / 100 para porcentagem; já o operador % sozinho calcula o resto da divisão inteira (módulo).',
+      'Basta escrever 15 % 200 que o Python calcula 15 por cento de 200 automaticamente.',
+      'O Python não consegue calcular porcentagens sem importar uma biblioteca externa.',
+      'O operador % calcula porcentagem e // calcula o resto da divisão.'
+    ],
+    correctIndex: 0,
+    explanation: 'Excelente! Em Python, o símbolo % é o operador de Módulo (resto da divisão: 15 % 2 = 1). Para calcular porcentagem real, dividimos a taxa por 100 e multiplicamos pelo valor total: (15 / 100) * 200 = 30.0.'
   }
 ];

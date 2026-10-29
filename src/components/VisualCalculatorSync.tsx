@@ -68,6 +68,9 @@ export const VisualCalculatorSync: React.FC = () => {
       } else {
         res = num1 % secondNum;
       }
+    } else if (operator === 'porc') {
+      const valPorc = (num1 / 100) * secondNum;
+      res = Number.isInteger(valPorc) ? valPorc : parseFloat(valPorc.toFixed(4));
     }
 
     setResult(res);
@@ -105,11 +108,13 @@ export const VisualCalculatorSync: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
         {/* Left Side: Physical/Visual Calculator Keypad (5 cols) */}
         <div className="lg:col-span-5 p-6 flex flex-col items-center justify-center bg-slate-50">
-          <div className="w-full max-w-[280px] bg-slate-900 p-4 rounded-3xl shadow-lg border border-slate-800">
+          <div className="w-full max-w-[290px] bg-slate-900 p-4 rounded-3xl shadow-lg border border-slate-800">
             {/* Calculator Display Screen */}
             <div className="bg-slate-950 p-4 rounded-2xl mb-4 text-right border border-slate-800/80">
               <div className="text-[11px] text-slate-500 h-4 font-mono">
-                {num1 !== null && `${num1} ${operator || ''} ${isCalculated && num2 !== null ? num2 : ''}`}
+                {num1 !== null && (operator === 'porc'
+                  ? `${num1}% de ${isCalculated && num2 !== null ? num2 : ''}`
+                  : `${num1} ${operator || ''} ${isCalculated && num2 !== null ? num2 : ''}`)}
               </div>
               <div className="text-2xl font-mono font-bold text-white tracking-wider truncate">
                 {display}
@@ -118,6 +123,35 @@ export const VisualCalculatorSync: React.FC = () => {
 
             {/* Keypad Grid */}
             <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={() => handleOperator('porc')}
+                className={`col-span-2 py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
+                  operator === 'porc' && !isCalculated
+                    ? 'bg-emerald-500 text-white font-bold'
+                    : 'bg-emerald-900/60 hover:bg-emerald-800/80 text-emerald-300 border border-emerald-700/50'
+                }`}
+                title="Calcular X% de Y: (num1 / 100) * num2"
+              >
+                % de (Porcentagem)
+              </button>
+              <button
+                onClick={() => handleOperator('/')}
+                className={`py-2 rounded-xl font-bold text-sm transition-colors active:scale-95 ${
+                  operator === '/' && !isCalculated
+                    ? 'bg-amber-500 text-slate-950'
+                    : 'bg-amber-600 hover:bg-amber-500 text-white'
+                }`}
+                title="Divisão Real (/)"
+              >
+                ÷
+              </button>
+              <button
+                onClick={handleClear}
+                className="py-2 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold rounded-xl text-xs transition-colors active:scale-95"
+              >
+                C (Limpar)
+              </button>
+
               <button
                 onClick={() => handleOperator('**')}
                 className={`py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
@@ -142,20 +176,14 @@ export const VisualCalculatorSync: React.FC = () => {
               </button>
               <button
                 onClick={() => handleOperator('%')}
-                className={`py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
+                className={`col-span-2 py-2 rounded-xl font-mono text-xs transition-colors active:scale-95 ${
                   operator === '%' && !isCalculated
                     ? 'bg-purple-500 text-white font-bold'
                     : 'bg-slate-800 hover:bg-slate-700 text-purple-300'
                 }`}
-                title="Módulo ou Resto (%)"
+                title="Módulo ou Resto da Divisão (%)"
               >
-                % (resto)
-              </button>
-              <button
-                onClick={handleClear}
-                className="py-2 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold rounded-xl text-xs transition-colors active:scale-95"
-              >
-                C (Limpar)
+                % (resto / módulo)
               </button>
 
               <button
@@ -303,7 +331,7 @@ export const VisualCalculatorSync: React.FC = () => {
                 </div>
                 <code className="font-mono text-xs block">
                   operacao = &quot;{operator || '...'}&quot;
-                  {operator && <span className="text-purple-400 font-normal"> # String com o operador escolhido</span>}
+                  {operator && <span className="text-purple-400 font-normal"> # {operator === 'porc' ? 'Cálculo de Porcentagem ((num1 / 100) * num2)' : 'String com o operador escolhido'}</span>}
                 </code>
               </div>
 
@@ -340,11 +368,17 @@ export const VisualCalculatorSync: React.FC = () => {
                       {operator === '**' && 'elif operacao == "**":'}
                       {operator === '//' && 'elif operacao == "//":'}
                       {operator === '%' && 'elif operacao == "%":'}
+                      {operator === 'porc' && 'elif operacao == "porc":'}
                     </span>
                     <div className="pl-4 text-emerald-300">
                       {operator === '/' && num2 === 0 ? (
                         <span className="text-rose-400">
                           if num2 == 0: print(&quot;Erro: Não é possível dividir por zero!&quot;)
+                        </span>
+                      ) : operator === 'porc' ? (
+                        <span>
+                          resultado = ({num1} / 100) * {num2}
+                          <span className="text-slate-400"> # = {result} ({num1}% de {num2})</span>
                         </span>
                       ) : (
                         <span>
@@ -354,7 +388,9 @@ export const VisualCalculatorSync: React.FC = () => {
                       )}
                     </div>
                     <div className="text-cyan-300 text-[11px] pt-1">
-                      print(f&quot;Resultado: &#123;num1&#125; &#123;operacao&#125; &#123;num2&#125; = &#123;resultado&#125;&quot;)
+                      {operator === 'porc'
+                        ? 'print(f"Resultado: {num1}% de {num2} = {resultado}")'
+                        : 'print(f"Resultado: {num1} {operacao} {num2} = {resultado}")'}
                     </div>
                   </div>
                 ) : (
@@ -367,7 +403,7 @@ export const VisualCalculatorSync: React.FC = () => {
           </div>
 
           <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-            <span>Experimente digitar uma conta como <strong>24 × 5</strong> ou testar <strong>8 ÷ 0</strong>.</span>
+            <span>Experimente testar <strong>15 → % de → 200 → =</strong> (Porcentagem) ou <strong>17 → % (resto) → 3 → =</strong>!</span>
           </div>
         </div>
       </div>

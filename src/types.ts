@@ -1,4 +1,4 @@
-export type CodeLevel = 'basico' | 'funcoes' | 'loop' | 'try_except' | 'sete_operadores' | 'historico';
+export type CodeLevel = 'basico' | 'funcoes' | 'loop' | 'try_except' | 'sete_operadores' | 'porcentagem' | 'historico';
 
 export interface CodeLineAnnotation {
   lineNumber: number;
